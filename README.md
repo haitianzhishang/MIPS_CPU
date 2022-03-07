@@ -67,5 +67,5 @@
 
 ## Architecture
 
-![Architecture](/home/xiaowei/Git/MIPS_CPU/datasheet/MIPS CPU.drawio.png)
+![Architecture](https://github.com/haitianzhishang/MIPS_CPU/blob/main/datasheet/MIPS%20CPU.drawio.png?raw=true)
 
