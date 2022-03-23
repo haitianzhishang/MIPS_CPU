@@ -8,7 +8,7 @@
 // Blog         : haitianzhishang.github.io
 //---------------------------------------------------------------------
 module core #(
-  paramater  
+  parameter  
 )
 (
   input             clk,    

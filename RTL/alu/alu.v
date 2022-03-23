@@ -8,7 +8,7 @@
 // Blog         : haitianzhishang.github.io
 //---------------------------------------------------------------------
 module alu #(
-  paramater  
+  parameter  
 )
 (
   input     [ 5: 0] func,    
