@@ -51,7 +51,7 @@
 | lui         | i <<16 and store to register                                 |        |      |
 | lb          | Load byte                         Rt <- SignExt8b(Mem8b(Rs + SignExt16b(i)) |        |      |
 | lh          | Load half word                 Rt <- SignExt16b(Mem16b(Rs + SignExt16b(i)) |        |      |
-| lw          | Load word                        Rt <- Mem4B(Rs + SignExt16b(i) |        |      |
+| lw          | Load word                        Rt <- Mem32b(Rs + SignExt16b(i) |        |      |
 | ulb         | Load unsigned byte         Rt <-  {24b'0, Mem8b(Rs + SignExt16b(i)} |        |      |
 | ulh         | Load unsigned half word Rt <-  {16b'0, Mem16b(Rs + SignExt16b(i)} |        |      |
 | sb          | Store byte                        Mem8b(Rs + SignExt16b(i))  <- Rt[7:0] |        |      |

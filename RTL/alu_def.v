@@ -1,0 +1,15 @@
+`define SIGNED_ADD      4'd0
+`define UNSIGNED_ADD    4'd1
+`define SIGNED_SUB      4'd2
+`define UNSIGNED_SUB    4'd3
+`define SIGNED_MUL      4'd4
+`define UNSIGNED_MUL    4'd5
+`define SIGNED_DIV      4'd6
+`define UNSIGNED_DIV    4'd7
+`define AND             4'd8
+`define OR              4'd9
+`define XOR             4'd10
+`define NOR             4'd11
+`define SIGNED_SHIFTL   4'd12
+`define SIGNED_SHIFTR   4'd13
+`define UNSIGNED_SHIFTR 4'd14
