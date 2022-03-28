@@ -5,15 +5,15 @@
 // Designer    : Chen Xiaowei         - Nanyang technological University 
 //                                    - Technische Universität München
 // Email       : chen1408@e.ntu.edu.sg
-// Blog         : haitianzhishang.github.io
+// Blog        : haitianzhishang.github.io
 //---------------------------------------------------------------------
 `include "instr_def.v"
 module core /*#(
   parameter  
 )*/
 (
-  input                          i_clk,    
-  input                          i_rst_n, 
+  input                           i_clk,    
+  input                           i_rst_n, 
   input  [`INSTR_WIDTH-1     : 0] i_instr,
   input  [`DATA_WIDTH-1      : 0] i_ld_data,
   output [`DATA_WIDTH-1      : 0] o_st_data,
@@ -22,17 +22,17 @@ module core /*#(
   
 );
 
-	reg  [`DATA_WIDTH-1      : 0] st_data;
+  reg  [`DATA_WIDTH-1      : 0] st_data;
   reg  [`INSTR_WIDTH-1     : 0] if_id_instr_reg;
   reg  [`INSTR_ADDR_WIDTH-1: 0] if_id_pc_reg;
 
-  wire [`OP_WIDTH-1   : 0] op;
-  wire [`RS_WIDTH-1   : 0] rs;
-  wire [`RT_WIDTH-1   : 0] rt;
-  wire [`RD_WIDTH-1   : 0] rd;
-  wire [`SHAMT_WIDTH-1: 0] shamt;
-  wire [`FUNCT_WIDTH-1: 0] funct;
-  wire [`IMMED_WIDTH-1: 0] immed;
+  wire [`OP_WIDTH-1        : 0] op;
+  wire [`RS_WIDTH-1        : 0] rs;
+  wire [`RT_WIDTH-1        : 0] rt;
+  wire [`RD_WIDTH-1        : 0] rd;
+  wire [`SHAMT_WIDTH-1     : 0] shamt;
+  wire [`FUNCT_WIDTH-1     : 0] funct;
+  wire [`IMMED_WIDTH-1     : 0] immed;
   reg  [`INSTR_ADDR_WIDTH-1: 0] id_ex_pc_reg;
   reg  [`REGISTER_WIDTH-1  : 0] id_ex_rs_data_reg;
   reg  [`REGISTER_WIDTH-1  : 0] id_ex_rt_data_reg;
@@ -44,14 +44,14 @@ module core /*#(
   reg                           id_ex_bne_reg;
   reg                           id_ex_blez_reg;
   reg                           id_ex_bgez_reg;
-	reg 													id_ex_sb_reg;
-	reg 													id_ex_sh_reg;
-	reg 													id_ex_sw_reg;
-	reg 													id_ex_lb_reg;
-	reg 													id_ex_lh_reg;
-	reg 													id_ex_lw_reg;
-	reg 													id_ex_ulb_reg;
-	reg 													id_ex_ulh_reg;
+  reg 													id_ex_sb_reg;
+  reg 													id_ex_sh_reg;
+  reg 													id_ex_sw_reg;
+  reg 													id_ex_lb_reg;
+  reg 													id_ex_lh_reg;
+  reg 													id_ex_lw_reg;
+  reg 													id_ex_ulb_reg;
+  reg 													id_ex_ulh_reg;
 
   reg  [`INSTR_ADDR_WIDTH-1: 0] ex_mem_pc_reg;
   reg  [`DATA_WIDTH-1      : 0] ex_mem_result_reg;
@@ -76,14 +76,14 @@ module core /*#(
   reg  [`RD_WIDTH-1       : 0] wb_id_rd_reg;
   reg  [`REGISTER_WIDTH-1 : 0] wb_id_rd_data_reg;
 
-  wire [`REGISTER_WIDTH-1: 0] i_rd_data;
-  wire [`REGISTER_WIDTH-1: 0] o_rs_data;
-  wire [`REGISTER_WIDTH-1: 0] o_rt_data;
+  wire [`REGISTER_WIDTH-1 : 0] i_rd_data;
+  wire [`REGISTER_WIDTH-1 : 0] o_rs_data;
+  wire [`REGISTER_WIDTH-1 : 0] o_rt_data;
 
-  wire [`FUNCT_WIDTH-1     : 0] i_operation;
-  wire [`DATA_WIDTH-1      : 0] i_op_0;
-  wire [`DATA_WIDTH-1      : 0] i_op_1;
-  wire [`DATA_WIDTH-1      : 0] o_result;
+  wire [`FUNCT_WIDTH-1    : 0] i_operation;
+  wire [`DATA_WIDTH-1     : 0] i_op_0;
+  wire [`DATA_WIDTH-1     : 0] i_op_1;
+  wire [`DATA_WIDTH-1     : 0] o_result;
 
 
 //Instruction Fetch Stage

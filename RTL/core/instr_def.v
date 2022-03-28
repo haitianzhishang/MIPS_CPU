@@ -15,9 +15,12 @@
 // Size
 `define REGISTER_NUM 32
 // Instruction Define
-`define R_TYPE 000000
-`define I_TYPE 010000
-`define J_TYPE 110000
+`define R_TYPE 00
+`define I_TYPE 01
+`define J_TYPE 10
+
+`define R_LOGIC  0000
+`define I_LOGIC  1111
 
 `define BEQ    010000
 `define BNE    010001
