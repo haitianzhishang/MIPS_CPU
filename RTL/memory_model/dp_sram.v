@@ -28,10 +28,10 @@ module dp_sram #(
 
   always@(posedge i_clk or negedge i_rst_n) 
   begin
-    if(!i_rst) 
+    if(!i_rst_n) 
     begin
       for(i=0;i<DEPTH;i=i+1)
-        mem <= 'b0;
+        mem[i] <= 'b0;
     end
     else
     begin

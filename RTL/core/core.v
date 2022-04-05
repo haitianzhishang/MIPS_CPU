@@ -7,11 +7,8 @@
 // Email       : chen1408@e.ntu.edu.sg
 // Blog        : haitianzhishang.github.io
 //---------------------------------------------------------------------
-`include "instr_def.v"
-module core /*#(
-  parameter  
-)*/
-(
+`include "./instr_def.v"
+module core(
   input                           i_clk,    
   input                           i_rst_n, 
   input  [`INSTR_WIDTH-1     : 0] i_instr,
@@ -19,7 +16,6 @@ module core /*#(
   output [`DATA_WIDTH-1      : 0] o_st_data,
   output [`INSTR_ADDR_WIDTH-1: 0] o_instr_addr,
   output [`DATA_ADDR_WIDTH-1 : 0] o_data_addr
-  
 );
 
   reg  [`DATA_WIDTH-1      : 0] st_data;

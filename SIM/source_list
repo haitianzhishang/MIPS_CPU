@@ -1,0 +1,6 @@
+../TB/tb_top.sv
+../RTL/core/core.v
+../RTL/core/register.v
+../RTL/memory_model/dp_sram.v
+../RTL/core/alu.v
++incdir+../RTL/core/includes
