@@ -7,17 +7,24 @@
 // Email       : chen1408@e.ntu.edu.sg
 // Blog        : haitianzhishang.github.io
 //---------------------------------------------------------------------
-`include "./instr_def.v"
+`include "instr_def.v"
 module core(
   input                           i_clk,    
   input                           i_rst_n, 
-  input  [`INSTR_WIDTH-1     : 0] i_instr,
-  input  [`DATA_WIDTH-1      : 0] i_ld_data,
-  output [`DATA_WIDTH-1      : 0] o_st_data,
-  output [`INSTR_ADDR_WIDTH-1: 0] o_instr_addr,
-  output [`DATA_ADDR_WIDTH-1 : 0] o_data_addr
+
+  output                          o_instr_bus_we,
+  input  [`INSTR_WIDTH-1     : 0] i_instr_bus_data,
+  output [`INSTR_WIDTH-1     : 0] o_instr_bus_data,
+  output [`INSTR_ADDR_WIDTH-1: 0] o_instr_bus_addr,
+  
+  output                          o_data_bus_we,
+  input  [`DATA_WIDTH-1      : 0] i_data_bus_data,
+  output [`DATA_WIDTH-1      : 0] o_data_bus_data,
+  output [`DATA_ADDR_WIDTH-1 : 0] o_data_bus_addr
 );
 
+  wire [`INSTR_WIDTH-1     : 0] instr;
+  reg  [`DATA_WIDTH-1      : 0] ld_data;
   reg  [`DATA_WIDTH-1      : 0] st_data;
   reg  [`INSTR_WIDTH-1     : 0] if_id_instr_reg;
   reg  [`INSTR_ADDR_WIDTH-1: 0] if_id_pc_reg;
@@ -49,6 +56,8 @@ module core(
   reg 													id_ex_ulb_reg;
   reg 													id_ex_ulh_reg;
 
+  wire [`INSTR_ADDR_WIDTH-1: 0] instr_addr;
+  wire [`DATA_ADDR_WIDTH-1 : 0] data_addr;
   reg  [`INSTR_ADDR_WIDTH-1: 0] ex_mem_pc_reg;
   reg  [`DATA_WIDTH-1      : 0] ex_mem_result_reg;
 	reg                           ex_mem_beq_reg;
@@ -72,14 +81,14 @@ module core(
   reg  [`RD_WIDTH-1       : 0] wb_id_rd_reg;
   reg  [`REGISTER_WIDTH-1 : 0] wb_id_rd_data_reg;
 
-  wire [`REGISTER_WIDTH-1 : 0] i_rd_data;
-  wire [`REGISTER_WIDTH-1 : 0] o_rs_data;
-  wire [`REGISTER_WIDTH-1 : 0] o_rt_data;
+  wire [`REGISTER_WIDTH-1 : 0] rd_data;
+  wire [`REGISTER_WIDTH-1 : 0] rs_data;
+  wire [`REGISTER_WIDTH-1 : 0] rt_data;
 
-  wire [`FUNCT_WIDTH-1    : 0] i_operation;
-  wire [`DATA_WIDTH-1     : 0] i_op_0;
-  wire [`DATA_WIDTH-1     : 0] i_op_1;
-  wire [`DATA_WIDTH-1     : 0] o_result;
+  wire [`FUNCT_WIDTH-1    : 0] operation;
+  wire [`DATA_WIDTH-1     : 0] op_0;
+  wire [`DATA_WIDTH-1     : 0] op_1;
+  wire [`DATA_WIDTH-1     : 0] result;
 
 
 //Instruction Fetch Stage
@@ -92,7 +101,7 @@ module core(
     end
     else
     begin
-      if_id_instr_reg <= i_instr;
+      if_id_instr_reg <= instr;
       if_id_pc_reg    <= if_id_pc_reg+4;
     end
   end
@@ -116,8 +125,8 @@ module core(
     else
     begin
       id_ex_pc_reg      <= if_id_pc_reg;  //Store PC+4 for an extra cycle
-      id_ex_rs_data_reg <= o_rs_data;
-      id_ex_rt_data_reg <= o_rt_data;
+      id_ex_rs_data_reg <= rs_data;
+      id_ex_rt_data_reg <= rt_data;
       id_ex_immed_reg   <= immed<<<2;
       //id_ex_rtype_reg   <= op ? R_TYPE 1 : 0;
       id_ex_itype_reg   <= (op[`OP_WIDTH-1:`OP_WIDTH-2]==`I_TYPE) ? 1 : 0;
@@ -175,7 +184,7 @@ module core(
       ex_mem_lw_reg     <= id_ex_lw_reg;
       ex_mem_ulb_reg    <= id_ex_ulb_reg;
       ex_mem_ulh_reg    <= id_ex_ulh_reg;
-      ex_mem_result_reg <= o_result;
+      ex_mem_result_reg <= result;
     end
   end
 
@@ -193,15 +202,15 @@ module core(
       begin
         mem_wb_ld_reg <= 1'b1;
         if(ex_mem_lb_reg)
-          mem_wb_mem_data_reg <= i_ld_data[7] ? {24'b1,i_ld_data[7:0]} : {24'b0,i_ld_data[7:0]};
+          mem_wb_mem_data_reg <= ld_data[7] ? {24'b1,ld_data[7:0]} : {24'b0,ld_data[7:0]};
         if(ex_mem_lh_reg)
-          mem_wb_mem_data_reg <= i_ld_data[7] ? {16'b1,i_ld_data[15:0]} : {16'b0,i_ld_data[15:0]};
+          mem_wb_mem_data_reg <= ld_data[7] ? {16'b1,ld_data[15:0]} : {16'b0,ld_data[15:0]};
         if(ex_mem_lw_reg)
-          mem_wb_mem_data_reg <= i_ld_data;
+          mem_wb_mem_data_reg <= ld_data;
         if(ex_mem_ulb_reg)
-          mem_wb_mem_data_reg <= {24'b0,i_ld_data[7:0]};
+          mem_wb_mem_data_reg <= {24'b0,ld_data[7:0]};
         if(ex_mem_ulh_reg)
-         mem_wb_mem_data_reg <= {24'b0,i_ld_data[7:0]};
+         mem_wb_mem_data_reg <= {24'b0,ld_data[7:0]};
       end
       if(ex_mem_sb_reg)
         st_data <= {24'b0,mem_wb_mem_data_reg};
@@ -211,9 +220,8 @@ module core(
         st_data <= mem_wb_mem_data_reg;  
     end
   end
-  assign o_data_addr  = ex_mem_result_reg;
-	assign o_st_data    = st_data;
-  assign o_instr_addr = ((ex_mem_beq_reg  && (id_ex_rs_data_reg==id_ex_rt_data_reg))|
+  assign data_addr    = ex_mem_result_reg;
+  assign instr_addr   = ((ex_mem_beq_reg  && (id_ex_rs_data_reg==id_ex_rt_data_reg))|
                          (ex_mem_bne_reg  && (id_ex_rs_data_reg!=id_ex_rt_data_reg))|
                          (ex_mem_blez_reg && (id_ex_rs_data_reg<=0))|
                          (ex_mem_bgez_reg && (id_ex_rs_data_reg>0)))
@@ -228,7 +236,7 @@ module core(
     end
     else
     begin
-      wb_id_rd_reg        <= i_rd_data;
+      wb_id_rd_reg        <= rd_data;
       if(mem_wb_ld_reg)
         wb_id_rd_data_reg <= mem_wb_mem_data_reg;
       else
@@ -243,16 +251,52 @@ module core(
                           .i_rs     (rs),
                           .i_rt     (rt),
                           .i_rd     (rd),
-                          .o_rs_data(o_rs_data),
-                          .o_rt_data(o_rt_data),
-                          .i_rd_data(i_rd_data)
+                          .o_rs_data(rs_data),
+                          .o_rt_data(rt_data),
+                          .i_rd_data(rd_data)
     );
 // Arithmetic Logic Unit
   alu alu_inst(
-                .i_operation(i_operation),
-                .i_op_0     (i_op_0),
-                .i_op_1     (i_op_1),
-                .o_result   (o_result)
+                .i_operation(operation),
+                .i_op_0     (op_0),
+                .i_op_1     (op_1),
+                .o_result   (result)
+    );
+
+// Instruction memory interface
+  mem_intf  #(
+              .BUS_DATA_WIDTH(32),
+              .BUS_ADDR_WIDTH(32)
+    )
+    instr_bus_intf_inst(
+                    .i_clk     (i_clk),
+                    .i_rst_n   (i_rst_n),
+                    .o_bus_we  (o_instr_bus_we),
+                    .i_bus_data(i_instr_bus_data),
+                    .o_bus_data(o_instr_bus_data),
+                    .o_bus_addr(o_instr_bus_addr),
+                    .i_we       (1'b0),
+                    .o_ld_data  (instr),
+                    .i_st_data  (32'b0),
+                    .i_data_addr(instr_addr)
+    );
+
+// Data memory interface
+  mem_intf  #(
+              .BUS_DATA_WIDTH(32),
+              .BUS_ADDR_WIDTH(32)
+    )
+    data_bus_intf_inst(
+                    .i_clk     (i_clk),
+                    .i_rst_n   (i_rst_n),
+                    .o_bus_we  (o_data_bus_we),
+                    .i_bus_data(i_data_bus_data),
+                    .o_bus_data(o_data_bus_data),
+                    .o_bus_addr(o_data_bus_addr),
+                    .i_we       (data_mem_we),
+                    .o_ld_data  (ld_data),
+                    .i_st_data  (st_data),
+                    .i_data_addr(data_addr)
     );
 
 

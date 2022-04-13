@@ -1,8 +1,9 @@
 /home/xiaowei/Git/MIPS_CPU/TB/tb_top.sv
-/home/xiaowei/Git/MIPS_CPU/RTL/core/instr_def.v
 /home/xiaowei/Git/MIPS_CPU/RTL/core/core.v
-/home/xiaowei/Git/MIPS_CPU/RTL/memory_model/dp_sram.v
 /home/xiaowei/Git/MIPS_CPU/RTL/core/register.v
-/home/xiaowei/Git/MIPS_CPU/RTL/core/alu_def.v
+/home/xiaowei/Git/MIPS_CPU/RTL/memory_model/dp_sram.v
 /home/xiaowei/Git/MIPS_CPU/RTL/core/alu.v
+/home/xiaowei/Git/MIPS_CPU/RTL/core/mem_intf.v
++incdir+../RTL/core/includes
+
 

@@ -3,4 +3,5 @@
 ../RTL/core/register.v
 ../RTL/memory_model/dp_sram.v
 ../RTL/core/alu.v
+../RTL/core/mem_intf.v
 +incdir+../RTL/core/includes

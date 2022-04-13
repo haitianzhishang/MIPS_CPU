@@ -20,7 +20,7 @@ VIEWER = gtkwave
 #TOOL OPTIONS
 COFLAGS = -v -o 
 SFLAGS = -v
-SOUTPUT = -lxt	
+SOUTPUT = 	
 #TOOL OUTPUT
 COUTPUT = compile.out			
 ###############################################################################
