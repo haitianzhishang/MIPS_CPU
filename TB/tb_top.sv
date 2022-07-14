@@ -47,7 +47,7 @@ module tb_top;
     clk   = 0;
     rst_n = 1;
     #5    rst_n = 0;
-    #10   rst_n = 1;
+    #15   rst_n = 1;
     #1000 $finish;
   end
 
@@ -63,7 +63,7 @@ module tb_top;
   initial
   begin
     @(posedge rst_n)
-    instr_mem_inst.mem[0]=lw(5'b0,5'b0,16'b0);
+    instr_mem_inst.mem[0]=lw(5'b1,5'b0,16'b0);
   end
 
   core core_inst(

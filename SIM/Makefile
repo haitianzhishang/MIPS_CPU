@@ -25,7 +25,7 @@ SOUTPUT =
 COUTPUT = compile.out			
 ###############################################################################
 #MAKE DIRECTIVES
-compile : $(TESTBENCH) $(SOURCE)
+compile: $(TESTBENCH) $(SOURCE)
 	$(COMPILER) -g2005-sv -o compile.out -s tb_top -c $(SOURCE)
 
 simulate: $(COUTPUT)
@@ -33,6 +33,7 @@ simulate: $(COUTPUT)
 
 wave: $(WAVEFILE)
 	$(VIEWER) $(WAVEFILE) &
+all: compile simulate 
 #MAKE DEPENDANCIES
 $(WAVEFILE): $(COUTPUT)
 	$(SIMULATOR) $(SOPTIONS) $(COUTPUT) $(SOUTPUT)

@@ -15,26 +15,26 @@
 // Size
 `define REGISTER_NUM 32
 // Instruction Define
-`define R_TYPE 00
-`define I_TYPE 01
-`define J_TYPE 10
+`define R_TYPE 2'b00
+`define I_TYPE 2'b01
+`define J_TYPE 2'b10
 
-`define R_LOGIC  0000
-`define I_LOGIC  1111
+`define R_LOGIC  2'b0000
+`define I_LOGIC  2'b1111
 
-`define BEQ    010000
-`define BNE    010001
-`define BLEZ   010010
-`define BGEZ   010011
+`define BEQ    6'b010000
+`define BNE    6'b010001
+`define BLEZ   6'b010010
+`define BGEZ   6'b010011
 
-`define SB     010100
-`define SH     010101
-`define SW     010110
+`define SB     6'b010100
+`define SH     6'b010101
+`define SW     6'b010110
 
-`define LB     011000
-`define LH     011001
-`define LW     011010
-`define ULB    011011
-`define ULH    011100
+`define LB     6'b011000
+`define LH     6'b011001
+`define LW     6'b011010
+`define ULB    6'b011011
+`define ULH    6'b011100
 
 

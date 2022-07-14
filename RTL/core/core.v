@@ -37,10 +37,14 @@ module core(
   wire [`FUNCT_WIDTH-1     : 0] funct;
   wire [`IMMED_WIDTH-1     : 0] immed;
   reg  [`INSTR_ADDR_WIDTH-1: 0] id_ex_pc_reg;
+  
+  reg  [`RT_WIDTH-1        : 0] id_ex_rt_reg;
+  reg  [`RD_WIDTH-1        : 0] id_ex_rd_reg;
   reg  [`REGISTER_WIDTH-1  : 0] id_ex_rs_data_reg;
   reg  [`REGISTER_WIDTH-1  : 0] id_ex_rt_data_reg;
+  reg  [`FUNCT_WIDTH-1     : 0] id_ex_funct_reg;
   reg  [`IMMED_WIDTH+1     : 0] id_ex_immed_reg;
-  //reg                         id_ex_rtype_reg;
+  reg                           id_ex_rtype_reg;
   reg                           id_ex_itype_reg;
   reg                           id_ex_jtype_reg;
   reg                           id_ex_beq_reg;
@@ -58,6 +62,8 @@ module core(
 
   wire [`INSTR_ADDR_WIDTH-1: 0] instr_addr;
   wire [`DATA_ADDR_WIDTH-1 : 0] data_addr;
+  reg  [`RT_WIDTH-1        : 0] ex_mem_rt_reg;
+  reg  [`RD_WIDTH-1        : 0] ex_mem_rd_reg;
   reg  [`INSTR_ADDR_WIDTH-1: 0] ex_mem_pc_reg;
   reg  [`DATA_WIDTH-1      : 0] ex_mem_result_reg;
 	reg                           ex_mem_beq_reg;
@@ -118,17 +124,39 @@ module core(
   begin
     if (!i_rst_n) 
     begin
+      id_ex_pc_reg      <= 'b0;  //Store PC+4 for an extra cycle
+      id_ex_rt_reg      <= 'b0;
+      id_ex_rd_reg      <= 'b0;
       id_ex_rs_data_reg <= 'b0;
-      id_ex_rt_data_reg <= 'b0;   
-      id_ex_immed_reg   <= 'b0; 
+      id_ex_rt_data_reg <= 'b0;
+      id_ex_funct_reg   <= 'b0;
+      id_ex_immed_reg   <= 'b0;
+      id_ex_rtype_reg   <= 'b0;
+      id_ex_itype_reg   <= 'b0;
+      id_ex_jtype_reg   <= 'b0;
+      id_ex_beq_reg     <= 'b0;
+      id_ex_bne_reg     <= 'b0;
+      id_ex_blez_reg    <= 'b0;
+      id_ex_bgez_reg    <= 'b0;
+      id_ex_sb_reg      <= 'b0;
+      id_ex_sh_reg      <= 'b0;
+      id_ex_sw_reg      <= 'b0;
+      id_ex_lb_reg      <= 'b0;
+      id_ex_lh_reg      <= 'b0;
+      id_ex_lw_reg      <= 'b0;
+      id_ex_ulb_reg     <= 'b0;
+      id_ex_ulh_reg     <= 'b0;
     end
     else
     begin
       id_ex_pc_reg      <= if_id_pc_reg;  //Store PC+4 for an extra cycle
+      id_ex_rt_reg      <= rt;
+      id_ex_rd_reg      <= rd;
       id_ex_rs_data_reg <= rs_data;
       id_ex_rt_data_reg <= rt_data;
+      id_ex_funct_reg   <= funct;
       id_ex_immed_reg   <= immed<<<2;
-      //id_ex_rtype_reg   <= op ? R_TYPE 1 : 0;
+      id_ex_rtype_reg   <= (op[`OP_WIDTH-1:`OP_WIDTH-2]==`R_TYPE) ? 1 : 0;
       id_ex_itype_reg   <= (op[`OP_WIDTH-1:`OP_WIDTH-2]==`I_TYPE) ? 1 : 0;
       id_ex_jtype_reg   <= (op[`OP_WIDTH-1:`OP_WIDTH-2]==`J_TYPE) ? 1 : 0;
       id_ex_beq_reg     <= (op==`BEQ)  ? 1 : 0;
@@ -147,8 +175,9 @@ module core(
   end
 
 // ALU Execution Stage
-  assign op_0 = (id_ex_beq_reg|id_ex_bne_reg|id_ex_blez_reg|id_ex_bgez_reg) ? id_ex_pc_reg : id_ex_rs_data_reg;
-  assign op_1 = id_ex_itype_reg ? id_ex_immed_reg : id_ex_rt_data_reg;
+  assign op_0       = (id_ex_beq_reg|id_ex_bne_reg|id_ex_blez_reg|id_ex_bgez_reg) ? id_ex_pc_reg : id_ex_rs_data_reg;
+  assign op_1       = id_ex_itype_reg ? id_ex_immed_reg : id_ex_rt_data_reg;
+  assign operation  = id_ex_rtype_reg ? id_ex_funct_reg : 6'b1; // Signed addition if no R-type instrcution
   always @(posedge i_clk or negedge i_rst_n) 
   begin
     if (!i_rst_n) 
@@ -171,6 +200,8 @@ module core(
     end
     else
     begin
+      ex_mem_rt_reg     <= id_ex_rt_reg;
+      ex_mem_rd_reg     <= id_ex_rd_reg;
       ex_mem_pc_reg     <= id_ex_pc_reg;
       ex_mem_beq_reg    <= id_ex_beq_reg;
       ex_mem_bne_reg    <= id_ex_bne_reg;
